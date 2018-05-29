@@ -1,5 +1,21 @@
-export DNS=dns_ali
+# 你主域名，如 baidu.com sina.com.cn 等
+export DOMAIN=your_domain
 
-export DOMAIN=your_domain.com
-export Ali_Key=your_key
-export Ali_Secret=your_secret
+# DNS类型，根据域名服务商而定
+export DNS=dns_xxx
+
+# 阿里云 DNS=dns_ali
+export Ali_Key="LTqIA87hOKdjevsf5"
+export Ali_Secret="0p5EYueFNq501xnCPzKNbx6K51qPH2"
+
+# Dnspod DNS=dns_dp
+export DP_Id="1234"
+export DP_Key="sADDsdasdgdsf"
+
+# Godaddy DNS=dns_gd
+export GD_Key="sdfsdfsdfljlbjkljlkjsdfoiwje"
+export GD_Secret="asdfsdfsfsdfsdfdfsdf"
+
+# AWS DNS=dns_aws
+AWS_ACCESS_KEY_ID="sdfsdfsdfljlbjkljlkjsdfoiwje"
+AWS_SECRET_ACCESS_KEY="xxxxxxx"
