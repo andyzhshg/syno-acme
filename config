@@ -1,0 +1,5 @@
+export DNS=dns_ali
+
+export DOMAIN=your_domain.com
+export Ali_Key=your_key
+export Ali_Secret=your_secret
