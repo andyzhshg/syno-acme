@@ -1,5 +1,3 @@
-source ./config
-
 DATE_TIME=`date +%Y%m%d-%H%M%S`
 echo '-------------------------------'
 echo 'cert update begin'
@@ -20,6 +18,7 @@ mkdir -p ${BACKUP_BASE}
 cp -r ${CERT_PATH} ${BACKUP_BASE}/${CERT_PATH_NAME}-${DATE_TIME}
 
 BASE_ROOT=$(cd "$(dirname "$0")";pwd)
+source ${BASE_ROOT}/config
 
 cd ${BASE_ROOT}
 echo 'downloading acme.sh tool...'
