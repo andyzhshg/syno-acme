@@ -4,6 +4,10 @@ export DOMAIN=your_domain
 # DNS类型，根据域名服务商而定
 export DNS=dns_xxx
 
+# DNS API 生效等待时间 值(单位：秒)
+# 某些域名服务商的API生效时间较大，需要将这个值加大(比如900)
+export DNS_SLEEP=120
+
 # 阿里云 DNS=dns_ali
 export Ali_Key="LTqIA87hOKdjevsf5"
 export Ali_Secret="0p5EYueFNq501xnCPzKNbx6K51qPH2"
