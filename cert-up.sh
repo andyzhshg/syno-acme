@@ -38,7 +38,7 @@ cd ${BASE_ROOT}
 echo 'updating default cert by acme.sh tool'
 source ${BIN_PATH}/acme.sh.env
 
-${BIN_PATH}/acme.sh --issue --dns ${DNS} -d *.${DOMAIN}
+${BIN_PATH}/acme.sh --issue --dns ${DNS} --dnssleep ${DNS_SLEEP} -d *.${DOMAIN}
 ${BIN_PATH}/acme.sh --installcert -d *.${DOMAIN} \
     --certpath ${CERT_PATH}/cert.pem \
     --key-file ${CERT_PATH}/privkey.pem \
