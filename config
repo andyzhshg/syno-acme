@@ -24,5 +24,5 @@ export GD_Secret="asdfsdfsfsdfsdfdfsdf"
 export AWS_ACCESS_KEY_ID="sdfsdfsdfljlbjkljlkjsdfoiwje"
 export AWS_SECRET_ACCESS_KEY="xxxxxxx"
 
-# LinNode DNS=dns_linode
+# Linode DNS=dns_linode
 export LINODE_API_KEY="xxxxxxxx"
