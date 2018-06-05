@@ -1,57 +1,113 @@
-DATE_TIME=`date +%Y%m%d-%H%M%S`
-echo '-------------------------------'
-echo 'cert update begin'
-echo ${DATE_TIME}
+#!/bin/bash
 
-echo 'finding default cert path...'
-CERT_BASE_PATH="/usr/syno/etc/certificate/_archive"
-CERT_PATH_NAME=`cat ${CERT_BASE_PATH}/DEFAULT`
-CERT_PATH=${CERT_BASE_PATH}/${CERT_PATH_NAME}
-if [ ! -d  ${CERT_PATH} ]; then
-  echo '[ERR] default cert path not found.'
-  exit 1
-fi
-
-echo 'backup default cert...'
-BACKUP_BASE=${CERT_BASE_PATH}/backup
-mkdir -p ${BACKUP_BASE}
-cp -r ${CERT_PATH} ${BACKUP_BASE}/${CERT_PATH_NAME}-${DATE_TIME}
-
+# path of this script
 BASE_ROOT=$(cd "$(dirname "$0")";pwd)
-source ${BASE_ROOT}/config
+# date time
+DATE_TIME=`date +%Y%m%d%H%M%S`
+# base crt path
+CRT_BASE_PATH="/usr/syno/etc/certificate"
+#CRT_BASE_PATH="/Users/carl/Downloads/certificate"
+ACME_BIN_PATH=${BASE_ROOT}/acme.sh
+TEMP_PATH=${BASE_ROOT}/temp
+CRT_PATH_NAME=`cat ${CRT_BASE_PATH}/_archive/DEFAULT`
+CRT_PATH=${CRT_BASE_PATH}/${CRT_PATH_NAME}
 
-cd ${BASE_ROOT}
-echo 'downloading acme.sh tool...'
-ACME_SH_ADDRESS=`curl -L https://raw.githubusercontent.com/andyzhshg/syno-acme/master/acme.sh.address`
-SRC_TAR_NAME=acme.sh.tar.gz
-curl -L -o ${SRC_TAR_NAME} ${ACME_SH_ADDRESS}
-SRC_NAME=`tar -tzf ${SRC_TAR_NAME} | head -1 | cut -f1 -d"/"`
-tar zxvf acme.sh.tar.gz
+backupCrt () {
+  echo 'begin backupCrt'
+  BACKUP_PATH=${BASE_ROOT}/backup/${DATE_TIME}
+  mkdir -p ${BACKUP_PATH}
+  cp -r ${CRT_BASE_PATH} ${BACKUP_PATH}
+  echo ${BACKUP_PATH} > ${BASE_ROOT}/backup/latest
+  echo 'done backupCrt'
+  return 0
+}
 
-echo 'installing cme.sh tool...'
-cd ${SRC_NAME}
-BIN_PATH=${BASE_ROOT}/acme.sh
-./acme.sh --install --nocron --home ${BIN_PATH}
+installAcme () {
+  echo 'begin installAcme'
+  mkdir -p ${TEMP_PATH}
+  cd ${TEMP_PATH}
+  echo 'begin downloading acme.sh tool...'
+  ACME_SH_ADDRESS=`curl -L https://raw.githubusercontent.com/andyzhshg/syno-acme/master/acme.sh.address`
+  SRC_TAR_NAME=acme.sh.tar.gz
+  curl -L -o ${SRC_TAR_NAME} ${ACME_SH_ADDRESS}
+  SRC_NAME=`tar -tzf ${SRC_TAR_NAME} | head -1 | cut -f1 -d"/"`
+  tar zxvf ${SRC_TAR_NAME}
+  echo 'begin installing acme.sh tool...'
+  cd ${SRC_NAME}
+  ./acme.sh --install --nocron --home ${ACME_BIN_PATH}
+  echo 'done installAcme'
+  rm -rf ${TEMP_PATH}
+  return 0
+}
 
-cd ${BASE_ROOT}
+generateCrt () {
+  echo 'begin generateCrt'
+  cd ${BASE_ROOT}
+  source config
+  echo 'begin updating default cert by acme.sh tool'
+  source ${ACME_BIN_PATH}/acme.sh.env
+  ${ACME_BIN_PATH}/acme.sh --issue --dns ${DNS} --dnssleep ${DNS_SLEEP} -d "*.${DOMAIN}"
+  ${ACME_BIN_PATH}/acme.sh --installcert -d *.${DOMAIN} \
+    --certpath ${CRT_PATH}/cert.pem \
+    --key-file ${CRT_PATH}/privkey.pem \
+    --fullchain-file ${CRT_PATH}/fullchain.pem
+  cd -
+  echo 'done generateCrt'
+  return 0
+}
 
-echo 'updating default cert by acme.sh tool'
-source ${BIN_PATH}/acme.sh.env
+updateService () {
+  echo 'begin updateService'
+  echo 'cp cert path to des'
+  /bin/python2 ${BASE_ROOT}/crt_cp.py ${CRT_PATH_NAME}
+  echo 'done updateService'
+}
 
-${BIN_PATH}/acme.sh --issue --dns ${DNS} --dnssleep ${DNS_SLEEP} -d *.${DOMAIN}
-${BIN_PATH}/acme.sh --installcert -d *.${DOMAIN} \
-    --certpath ${CERT_PATH}/cert.pem \
-    --key-file ${CERT_PATH}/privkey.pem \
-	--fullchain-file ${CERT_PATH}/fullchain.pem
+reloadWebService () {
+  echo 'begin reloadWebService'
+  echo 'reloading new cert...'
+  /usr/syno/etc/rc.sysv/nginx.sh reload
+  echo 'done reloadWebService'  
+}
 
-echo 'removing temp data...'
-rm ${SRC_TAR_NAME}
-rm -rf ${SRC_NAME}
-rm -rf ${BIN_PATH}
+revertCrt () {
+  echo 'begin revertCrt'
+  BACKUP_PATH=${BASE_ROOT}/backup/$1
+  if [ -z "$1" ]; then
+    BACKUP_PATH=`cat ${BASE_ROOT}/backup/latest`
+  fi
+  if [ ! -d "${BACKUP_PATH}" ]; then
+    echo "[ERR] backup path: ${BACKUP_PATH} not found."
+    return 1
+  fi
+  echo "${BACKUP_PATH} ${CRT_BASE_PATH}"
+  cp -rf ${BACKUP_PATH}/certificate/* ${CRT_BASE_PATH}
+  reloadWebService
+  echo 'done revertCrt'
+}
 
-echo 'reloading new cert...'
-/usr/syno/etc/rc.sysv/nginx.sh reload
+updateCrt () {
+  echo '------ begin updateCrt ------'
+  backupCrt
+  installAcme
+  generateCrt
+  updateService
+  reloadWebService
+  echo '------ end updateCrt ------'
+}
 
-echo 'cert update done!'
-echo '-------------------------------------------------'
+case "$1" in
+  update)
+    echo "begin update cert"
+    updateCrt
+    ;;
 
+  revert)
+    echo "begin revert"
+      revertCrt $2
+      ;;
+
+    *)
+        echo "Usage: $0 {update|revert}"
+        exit 1
+esac
