@@ -10,7 +10,7 @@ CRT_BASE_PATH="/usr/syno/etc/certificate"
 ACME_BIN_PATH=${BASE_ROOT}/acme.sh
 TEMP_PATH=${BASE_ROOT}/temp
 CRT_PATH_NAME=`cat ${CRT_BASE_PATH}/_archive/DEFAULT`
-CRT_PATH=${CRT_BASE_PATH}/${CRT_PATH_NAME}
+CRT_PATH=${CRT_BASE_PATH}/_archive/${CRT_PATH_NAME}
 
 backupCrt () {
   echo 'begin backupCrt'
