@@ -1,5 +1,5 @@
 # 你主域名，如 baidu.com sina.com.cn 等
-export DOMAIN=your_domain
+export DOMAIN=your.domain;*.your.domain
 
 # DNS类型，根据域名服务商而定
 export DNS=dns_xxx
