@@ -29,7 +29,7 @@ installAcme () {
   echo 'begin downloading acme.sh tool...'
   #ACME_SH_ADDRESS=`curl -L https://raw.githubusercontent.com/andyzhshg/syno-acme/master/acme.sh.address`
   LATEST_TAG=$(curl https://api.github.com/repos/Neilpang/acme.sh/releases/latest | jq -r .tag_name)
-  ACME_SH_ADDRESS="https://github.com/Neilpang/acme.sh/archive/${LATEST_TAG}.tar.gz
+  ACME_SH_ADDRESS="https://github.com/Neilpang/acme.sh/archive/${LATEST_TAG}.tar.gz"
   SRC_TAR_NAME=acme.sh.tar.gz
   curl -L -o ${SRC_TAR_NAME} ${ACME_SH_ADDRESS}
   SRC_NAME=`tar -tzf ${SRC_TAR_NAME} | head -1 | cut -f1 -d"/"`
