@@ -32,7 +32,7 @@ CP_FROM_DIR = ARCHIEV_PATH + '/' + SRC_DIR_NAME
 for service in services:
     CP_TO_DIR = '%s/%s/%s' %(CERT_BASE_PATH, service['subscriber'], service['service'])
     if not os.path.exists(CP_TO_DIR):
-        continue
+        os.makedirs(CP_TO_DIR)
     for f in CERT_FILES:
         src = CP_FROM_DIR + '/' + f 
         des = CP_TO_DIR + '/' + f
