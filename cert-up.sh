@@ -51,7 +51,6 @@ generateCrt () {
     --certpath ${CRT_PATH}/cert.pem \
     --key-file ${CRT_PATH}/privkey.pem \
     --fullchain-file ${CRT_PATH}/fullchain.pem
-  cd -
   echo 'done generateCrt'
   return 0
 }
