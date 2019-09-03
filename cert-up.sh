@@ -57,6 +57,8 @@ generateCrt () {
     return 0
   else
     echo '[ERR] fail to generateCrt'
+    echo "begin revert"
+    revertCrt $2
     exit 1;
   fi
 }
