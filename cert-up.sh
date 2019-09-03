@@ -51,8 +51,14 @@ generateCrt () {
     --certpath ${CRT_PATH}/cert.pem \
     --key-file ${CRT_PATH}/privkey.pem \
     --fullchain-file ${CRT_PATH}/fullchain.pem
-  echo 'done generateCrt'
-  return 0
+
+  if [ -s "${CRT_PATH}/cert.pem" ]; then
+    echo 'done generateCrt'
+    return 0
+  else
+    echo '[ERR] fail to generateCrt'
+    exit 1;
+  fi
 }
 
 updateService () {
@@ -66,6 +72,10 @@ reloadWebService () {
   echo 'begin reloadWebService'
   echo 'reloading new cert...'
   /usr/syno/etc/rc.sysv/nginx.sh reload
+  echo 'relading Apache 2.2'
+  stop pkg-apache22
+  start pkg-apache22
+  reload pkg-apache22
   echo 'done reloadWebService'  
 }
 
