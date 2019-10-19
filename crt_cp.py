@@ -16,6 +16,7 @@ CERT_FILES = [
 SRC_DIR_NAME = sys.argv[1]
 
 CERT_BASE_PATH = '/usr/syno/etc/certificate'
+PKG_CERT_BASE_PATH = '/usr/local/etc/certificate'
 
 ARCHIEV_PATH = CERT_BASE_PATH + '/_archive'
 INFO_FILE_PATH = ARCHIEV_PATH + '/INFO'
@@ -30,13 +31,14 @@ except:
 
 CP_FROM_DIR = ARCHIEV_PATH + '/' + SRC_DIR_NAME
 for service in services:
-    CP_TO_DIR = '%s/%s/%s' %(CERT_BASE_PATH, service['subscriber'], service['service'])
-    if not os.path.exists(CP_TO_DIR):
-        os.makedirs(CP_TO_DIR)
+    print 'Copy cert for %s' %(service['display_name'])
+    if service['isPkg']:
+        CP_TO_DIR = '%s/%s/%s' %(PKG_CERT_BASE_PATH, service['subscriber'], service['service'])
+    else:
+        CP_TO_DIR = '%s/%s/%s' % (CERT_BASE_PATH, service['subscriber'], service['service'])
     for f in CERT_FILES:
         src = CP_FROM_DIR + '/' + f 
         des = CP_TO_DIR + '/' + f
-        print src, des
         try:
             shutil.copy2(src, des)
         except:
