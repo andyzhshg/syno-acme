@@ -6,6 +6,7 @@ BASE_ROOT=$(cd "$(dirname "$0")";pwd)
 DATE_TIME=`date +%Y%m%d%H%M%S`
 # base crt path
 CRT_BASE_PATH="/usr/syno/etc/certificate"
+PKG_CRT_BASE_PATH="/usr/local/etc/certificate"
 #CRT_BASE_PATH="/Users/carl/Downloads/certificate"
 ACME_BIN_PATH=${BASE_ROOT}/acme.sh
 TEMP_PATH=${BASE_ROOT}/temp
@@ -17,6 +18,7 @@ backupCrt () {
   BACKUP_PATH=${BASE_ROOT}/backup/${DATE_TIME}
   mkdir -p ${BACKUP_PATH}
   cp -r ${CRT_BASE_PATH} ${BACKUP_PATH}
+  cp -r ${PKG_CRT_BASE_PATH} ${BACKUP_PATH}/package_cert
   echo ${BACKUP_PATH} > ${BASE_ROOT}/backup/latest
   echo 'done backupCrt'
   return 0
@@ -58,7 +60,7 @@ generateCrt () {
   else
     echo '[ERR] fail to generateCrt'
     echo "begin revert"
-    revertCrt $2
+    revertCrt
     exit 1;
   fi
 }
@@ -91,8 +93,10 @@ revertCrt () {
     echo "[ERR] backup path: ${BACKUP_PATH} not found."
     return 1
   fi
-  echo "${BACKUP_PATH} ${CRT_BASE_PATH}"
+  echo "${BACKUP_PATH}/certificate ${CRT_BASE_PATH}"
   cp -rf ${BACKUP_PATH}/certificate/* ${CRT_BASE_PATH}
+  echo "${BACKUP_PATH}/package_cert ${PKG_CRT_BASE_PATH}"
+  cp -rf ${BACKUP_PATH}/package_cert/* ${PKG_CRT_BASE_PATH}
   reloadWebService
   echo 'done revertCrt'
 }
