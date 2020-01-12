@@ -47,6 +47,7 @@ generateCrt () {
   cd ${BASE_ROOT}
   source config
   echo 'begin updating default cert by acme.sh tool'
+  rm -rf ${CRT_PATH}/*
   source ${ACME_BIN_PATH}/acme.sh.env
   ${ACME_BIN_PATH}/acme.sh --force --log --issue --dns ${DNS} --dnssleep ${DNS_SLEEP} -d "${DOMAIN}" -d "*.${DOMAIN}"
   ${ACME_BIN_PATH}/acme.sh --installcert -d ${DOMAIN} -d *.${DOMAIN} \
