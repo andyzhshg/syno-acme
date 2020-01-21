@@ -10,8 +10,6 @@ PKG_CRT_BASE_PATH="/usr/local/etc/certificate"
 #CRT_BASE_PATH="/Users/carl/Downloads/certificate"
 ACME_BIN_PATH=${BASE_ROOT}/acme.sh
 TEMP_PATH=${BASE_ROOT}/temp
-CRT_PATH_NAME=`cat ${CRT_BASE_PATH}/_archive/DEFAULT`
-CRT_PATH=${CRT_BASE_PATH}/_archive/${CRT_PATH_NAME}
 
 backupCrt () {
   echo 'begin backupCrt'
@@ -114,6 +112,20 @@ updateCrt () {
 case "$1" in
   update)
     echo "begin update cert"
+    
+    # set target
+    if [[ -n "$2" ]] ; then
+      CRT_PATH_NAME="$2"
+    else
+      CRT_PATH_NAME=`cat ${CRT_BASE_PATH}/_archive/DEFAULT`
+    fi
+    CRT_PATH=${CRT_BASE_PATH}/_archive/${CRT_PATH_NAME}
+    
+    # set DNS
+    if [[ -n "$3" ]] ; then
+      DNS="$3"
+    fi
+    
     updateCrt
     ;;
 
@@ -123,6 +135,12 @@ case "$1" in
       ;;
 
     *)
-        echo "Usage: $0 {update|revert}"
+        echo "Usage:"
+        echo -e "\t$0 update [cert_id] [dns]"
+        echo -e "\t$0 revert [date_time]"
+        echo -e "\t- [cert_id] is the directory name of the certificate your wanna update. You can find it under /usr/syno/etc/certificate. You can omit it if you just want to update the default certificate."
+        echo -e "\t- [dns] is your provider's name. Leave it to use the value in config."
+        echo -e "\t- [date_time] is the timestamp of the backup you want to revert."
+        echo -e "\t* [cert_id], [dns], [date_time] can be omitted."
         exit 1
 esac
