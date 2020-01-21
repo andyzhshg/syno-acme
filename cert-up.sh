@@ -139,11 +139,16 @@ case "$1" in
       revertCrt $2
       ;;
 
+  show)
+    cat ${CRT_BASE_PATH}/_archive/INFO
+      ;;
+
     *)
         echo "Usage:"
         echo -e "\t$0 update [cert_id] [domain] [dns]"
         echo -e "\t$0 revert [date_time]"
-        echo -e "\t- [cert_id] is the directory name of the certificate your wanna update. You can find it under /usr/syno/etc/certificate. You can omit it if you just want to update the default certificate."
+        echo -e "\t$0 show"
+        echo -e "\t- [cert_id] is the directory name of the certificate your wanna update, It's a string contains 6 letters like 'xgDShQ'. You can find it by \"$0 show\" to list all the certificates with their names. Omit it if you just want to update the default certificate."
         echo -e "\t- [domain] is your hostname."
         echo -e "\t- [dns] is your provider's name. Leave it to use the value in config."
         echo -e "\t- [date_time] is the timestamp of the backup you want to revert."
