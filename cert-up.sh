@@ -43,7 +43,6 @@ installAcme () {
 generateCrt () {
   echo 'begin generateCrt'
   cd ${BASE_ROOT}
-  source config
   echo 'begin updating default cert by acme.sh tool'
   source ${ACME_BIN_PATH}/acme.sh.env
   ${ACME_BIN_PATH}/acme.sh --force --log --issue --dns ${DNS} --dnssleep ${DNS_SLEEP} -d "${DOMAIN}" -d "*.${DOMAIN}"
@@ -113,6 +112,7 @@ case "$1" in
   update)
     echo "begin update cert"
     
+    source ${BASE_ROOT}/config
     # set target
     if [[ -n "$2" ]] ; then
       CRT_PATH_NAME="$2"
