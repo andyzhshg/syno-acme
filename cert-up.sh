@@ -121,9 +121,14 @@ case "$1" in
     fi
     CRT_PATH=${CRT_BASE_PATH}/_archive/${CRT_PATH_NAME}
     
-    # set DNS
+    # set domain
     if [[ -n "$3" ]] ; then
-      DNS="$3"
+      DOMAIN="$3"
+    fi
+    
+    # set DNS
+    if [[ -n "$4" ]] ; then
+      DNS="$4"
     fi
     
     updateCrt
@@ -136,9 +141,10 @@ case "$1" in
 
     *)
         echo "Usage:"
-        echo -e "\t$0 update [cert_id] [dns]"
+        echo -e "\t$0 update [cert_id] [domain] [dns]"
         echo -e "\t$0 revert [date_time]"
         echo -e "\t- [cert_id] is the directory name of the certificate your wanna update. You can find it under /usr/syno/etc/certificate. You can omit it if you just want to update the default certificate."
+        echo -e "\t- [domain] is your hostname."
         echo -e "\t- [dns] is your provider's name. Leave it to use the value in config."
         echo -e "\t- [date_time] is the timestamp of the backup you want to revert."
         echo -e "\t* [cert_id], [dns], [date_time] can be omitted."
