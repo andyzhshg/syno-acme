@@ -10,8 +10,6 @@ PKG_CRT_BASE_PATH="/usr/local/etc/certificate"
 #CRT_BASE_PATH="/Users/carl/Downloads/certificate"
 ACME_BIN_PATH=${BASE_ROOT}/acme.sh
 TEMP_PATH=${BASE_ROOT}/temp
-CRT_PATH_NAME=`cat ${CRT_BASE_PATH}/_archive/DEFAULT`
-CRT_PATH=${CRT_BASE_PATH}/_archive/${CRT_PATH_NAME}
 
 backupCrt () {
   echo 'begin backupCrt'
@@ -45,12 +43,11 @@ installAcme () {
 generateCrt () {
   echo 'begin generateCrt'
   cd ${BASE_ROOT}
-  source config
   echo 'begin updating default cert by acme.sh tool'
   source ${ACME_BIN_PATH}/acme.sh.env
   ${ACME_BIN_PATH}/acme.sh --force --log --issue --dns ${DNS} --dnssleep ${DNS_SLEEP} -d "${DOMAIN}" -d "*.${DOMAIN}"
-  ${ACME_BIN_PATH}/acme.sh --installcert -d ${DOMAIN} -d *.${DOMAIN} \
-    --certpath ${CRT_PATH}/cert.pem \
+  ${ACME_BIN_PATH}/acme.sh --force --installcert -d ${DOMAIN} -d *.${DOMAIN} \
+    --cert-file ${CRT_PATH}/cert.pem \
     --key-file ${CRT_PATH}/privkey.pem \
     --fullchain-file ${CRT_PATH}/fullchain.pem
 
@@ -114,6 +111,26 @@ updateCrt () {
 case "$1" in
   update)
     echo "begin update cert"
+    
+    source ${BASE_ROOT}/config
+    # set target
+    if [[ -n "$2" ]] ; then
+      CRT_PATH_NAME="$2"
+    else
+      CRT_PATH_NAME=`cat ${CRT_BASE_PATH}/_archive/DEFAULT`
+    fi
+    CRT_PATH=${CRT_BASE_PATH}/_archive/${CRT_PATH_NAME}
+    
+    # set domain
+    if [[ -n "$3" ]] ; then
+      DOMAIN="$3"
+    fi
+    
+    # set DNS
+    if [[ -n "$4" ]] ; then
+      DNS="$4"
+    fi
+    
     updateCrt
     ;;
 
@@ -122,7 +139,19 @@ case "$1" in
       revertCrt $2
       ;;
 
+  show)
+    cat ${CRT_BASE_PATH}/_archive/INFO
+      ;;
+
     *)
-        echo "Usage: $0 {update|revert}"
+        echo "Usage:"
+        echo -e "\t$0 update [cert_id] [domain] [dns]"
+        echo -e "\t$0 revert [date_time]"
+        echo -e "\t$0 show"
+        echo -e "\t- [cert_id] is the directory name of the certificate your wanna update, It's a string contains 6 letters like 'xgDShQ'. You can find it by \"$0 show\" to list all the certificates with their names. Omit it if you just want to update the default certificate."
+        echo -e "\t- [domain] is your hostname."
+        echo -e "\t- [dns] is your provider's name. Leave it to use the value in config."
+        echo -e "\t- [date_time] is the timestamp of the backup you want to revert."
+        echo -e "\t* [cert_id], [dns], [date_time] can be omitted."
         exit 1
 esac
