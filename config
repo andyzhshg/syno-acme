@@ -1,5 +1,5 @@
-# 你主域名，如 baidu.com sina.com.cn 等
-export DOMAIN=your_domain
+# 你域名，如 baidu.com sina.com.cn 等，多个域名之间逗号分隔，支持泛域名
+export DOMAIN=your_domain1,*.your_domain1,your_domain2,*.your_domain2
 
 # DNS类型，根据域名服务商而定
 export DNS=dns_xxx
