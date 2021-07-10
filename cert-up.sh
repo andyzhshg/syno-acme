@@ -12,6 +12,8 @@ ACME_BIN_PATH=${BASE_ROOT}/acme.sh
 TEMP_PATH=${BASE_ROOT}/temp
 CRT_PATH_NAME=`cat ${CRT_BASE_PATH}/_archive/DEFAULT`
 CRT_PATH=${CRT_BASE_PATH}/_archive/${CRT_PATH_NAME}
+FIND_MAJORVERSION_FILE="/etc/VERSION"
+FIND_MAJORVERSION_STR="majorversion=\"7\""
 
 backupCrt () {
   echo 'begin backupCrt'
@@ -49,7 +51,7 @@ generateCrt () {
   echo 'begin updating default cert by acme.sh tool'
   source ${ACME_BIN_PATH}/acme.sh.env
   ${ACME_BIN_PATH}/acme.sh --force --log --issue --dns ${DNS} --dnssleep ${DNS_SLEEP} -d "${DOMAIN}" -d "*.${DOMAIN}"
-  ${ACME_BIN_PATH}/acme.sh --force --installcert -d ${DOMAIN} -d *.${DOMAIN} \
+  ${ACME_BIN_PATH}/acme.sh --installcert -d ${DOMAIN} -d *.${DOMAIN} \
     --certpath ${CRT_PATH}/cert.pem \
     --key-file ${CRT_PATH}/privkey.pem \
     --fullchain-file ${CRT_PATH}/fullchain.pem
@@ -75,7 +77,13 @@ updateService () {
 reloadWebService () {
   echo 'begin reloadWebService'
   echo 'reloading new cert...'
-  /usr/syno/etc/rc.sysv/nginx.sh reload
+  if [ `grep -c "$FIND_MAJORVERSION_STR" $FIND_MAJORVERSION_FILE` -ne '0' ];then
+    echo "MajorVersion = 7"
+    synosystemctl restart nginx
+  else
+    echo "MajorVersion < 7"
+    /usr/syno/etc/rc.sysv/nginx.sh reload
+  fi
   echo 'relading Apache 2.2'
   stop pkg-apache22
   start pkg-apache22
