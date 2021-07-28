@@ -90,10 +90,14 @@ reloadWebService () {
     echo "MajorVersion < 7"
     /usr/syno/etc/rc.sysv/nginx.sh reload
   fi
-  #echo 'relading Apache 2.2'
-  #stop pkg-apache22
-  #start pkg-apache22
-  #reload pkg-apache22
+  if [ `grep -c "$FIND_MAJORVERSION_STR" $FIND_MAJORVERSION_FILE` -ne '0' ];then
+    echo "MajorVersion = 7, no need to reload apache"
+  else
+	echo 'relading Apache on DSM 6.x'
+	stop pkg-apache22
+	start pkg-apache22
+	reload pkg-apache22
+  fi  
   echo 'done reloadWebService'  
 }
 
