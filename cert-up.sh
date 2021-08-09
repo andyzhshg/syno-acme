@@ -37,6 +37,7 @@ installAcme () {
   echo 'begin installing acme.sh tool...'
   cd ${SRC_NAME}
   ./acme.sh --install --nocron --home ${ACME_BIN_PATH}
+  ./acme.sh --set-default-ca  --server  letsencrypt
   echo 'done installAcme'
   rm -rf ${TEMP_PATH}
   return 0
