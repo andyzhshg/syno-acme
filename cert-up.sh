@@ -12,6 +12,8 @@ ACME_BIN_PATH=${BASE_ROOT}/acme.sh
 TEMP_PATH=${BASE_ROOT}/temp
 CRT_PATH_NAME=`cat ${CRT_BASE_PATH}/_archive/DEFAULT`
 CRT_PATH=${CRT_BASE_PATH}/_archive/${CRT_PATH_NAME}
+FIND_MAJORVERSION_FILE="/etc/VERSION"
+FIND_MAJORVERSION_STR="majorversion=\"7\""
 
 backupCrt () {
   echo 'begin backupCrt'
@@ -72,18 +74,34 @@ generateCrt () {
 updateService () {
   echo 'begin updateService'
   echo 'cp cert path to des'
-  /bin/python2 ${BASE_ROOT}/crt_cp.py ${CRT_PATH_NAME}
+  if [ `grep -c "$FIND_MAJORVERSION_STR" $FIND_MAJORVERSION_FILE` -ne '0' ];then
+    echo "MajorVersion = 7, use system default python2"
+    python2 ${BASE_ROOT}/crt_cp.py ${CRT_PATH_NAME}
+  else
+    echo "MajorVersion < 7"
+    /bin/python2 ${BASE_ROOT}/crt_cp.py ${CRT_PATH_NAME}
+  fi
   echo 'done updateService'
 }
 
 reloadWebService () {
   echo 'begin reloadWebService'
   echo 'reloading new cert...'
-  /usr/syno/etc/rc.sysv/nginx.sh reload
-  echo 'relading Apache 2.2'
-  stop pkg-apache22
-  start pkg-apache22
-  reload pkg-apache22
+  if [ `grep -c "$FIND_MAJORVERSION_STR" $FIND_MAJORVERSION_FILE` -ne '0' ];then
+    echo "MajorVersion = 7"
+    synow3tool --gen-all && systemctl reload nginx
+  else
+    echo "MajorVersion < 7"
+    /usr/syno/etc/rc.sysv/nginx.sh reload
+  fi
+  if [ `grep -c "$FIND_MAJORVERSION_STR" $FIND_MAJORVERSION_FILE` -ne '0' ];then
+    echo "MajorVersion = 7, no need to reload apache"
+  else
+	echo 'relading Apache on DSM 6.x'
+	stop pkg-apache22
+	start pkg-apache22
+	reload pkg-apache22
+  fi  
   echo 'done reloadWebService'  
 }
 
