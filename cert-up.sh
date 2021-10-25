@@ -24,6 +24,16 @@ backupCrt () {
   return 0
 }
 
+backupCurrCrt () {
+  echo 'begin backupCurrCrt'
+  BACKUP_PATH=${BASE_ROOT}/backup/current
+  mkdir -p ${BACKUP_PATH}
+  cp -rf ${CRT_BASE_PATH} ${BACKUP_PATH}
+  cp -rf ${PKG_CRT_BASE_PATH} ${BACKUP_PATH}/package_cert
+  echo 'done backupCurrCrt'
+  return 0
+}
+
 installAcme () {
   echo 'begin installAcme'
   mkdir -p ${TEMP_PATH}
@@ -101,6 +111,19 @@ revertCrt () {
   echo 'done revertCrt'
 }
 
+revertCurrCrt () {
+  echo 'begin revertCurrCrt'
+  BACKUP_PATH=${BASE_ROOT}/backup/current
+  if [ ! -d "${BACKUP_PATH}" ]; then
+    echo "[ERR] backup path: ${BACKUP_PATH} not found."
+    return 1
+  fi
+  cp -rf ${BACKUP_PATH}/certificate/system/default/[cert,fullchain,privkey]*.pem ${CRT_PATH}
+  updateService
+  reloadWebService
+  echo 'done revertCurrCrt'
+}
+
 updateCrt () {
   echo '------ begin updateCrt ------'
   backupCrt
@@ -108,6 +131,7 @@ updateCrt () {
   generateCrt
   updateService
   reloadWebService
+  backupCurrCrt
   echo '------ end updateCrt ------'
 }
 
@@ -122,7 +146,22 @@ case "$1" in
       revertCrt $2
       ;;
 
+  backup)
+    echo "begin backup"
+      backupCrt
+      ;;
+
+  backupcurr)
+    echo "begin backupcurr"
+      backupCurrCrt
+      ;;
+
+  revertcurr)
+    echo "begin revertcurr"
+      revertCurrCrt
+      ;;
+
     *)
-        echo "Usage: $0 {update|revert}"
+        echo "Usage: $0 {update|revert|backup|backupcurr|revertcurr}"
         exit 1
 esac
