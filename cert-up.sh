@@ -29,9 +29,10 @@ installAcme () {
   mkdir -p ${TEMP_PATH}
   cd ${TEMP_PATH}
   echo 'begin downloading acme.sh tool...'
-  ACME_SH_ADDRESS=`curl -L https://cdn.jsdelivr.net/gh/andyzhshg/syno-acme@master/acme.sh.address`
+  VERSION=wget -qO- -t1 -T2 "https://api.github.com/repos/acmesh-official/acme.sh/releases/latest" | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g'
   SRC_TAR_NAME=acme.sh.tar.gz
-  curl -L -o ${SRC_TAR_NAME} ${ACME_SH_ADDRESS}
+  ZEROSSL_EMAI=wanghan0501@foxmail.com
+  curl -L -o ${SRC_TAR_NAME} https://ghproxy.com/https://github.com/acmesh-official/acme.sh/archive/${VERSION}.tar.gz acme.sh --register-account -m ${ZEROSSL_EMAI} --server zerossl
   SRC_NAME=`tar -tzf ${SRC_TAR_NAME} | head -1 | cut -f1 -d"/"`
   tar zxvf ${SRC_TAR_NAME}
   echo 'begin installing acme.sh tool...'
