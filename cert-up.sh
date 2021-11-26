@@ -29,8 +29,8 @@ installAcme () {
   mkdir -p ${TEMP_PATH}
   cd ${TEMP_PATH}
   echo 'begin downloading acme.sh tool...'
-  version=wget -qO- -t1 -T2 "https://api.github.com/repos/acmesh-official/acme.sh/releases/latest" | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g'
-  ACME_SH_ADDRESS=https://ghproxy.com/https://github.com/acmesh-official/acme.sh/archive/${version}.tar.gz
+  ACME_SH_VERSION=$(wget -qO- -t1 -T2 "https://api.github.com/repos/acmesh-official/acme.sh/releases/latest" | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g')
+  ACME_SH_ADDRESS=https://ghproxy.com/https://github.com/acmesh-official/acme.sh/archive/${ACME_SH_VERSION}.tar.gz
   SRC_TAR_NAME=acme.sh.tar.gz
   curl -L -o ${SRC_TAR_NAME} ${ACME_SH_ADDRESS}
   SRC_NAME=`tar -tzf ${SRC_TAR_NAME} | head -1 | cut -f1 -d"/"`
