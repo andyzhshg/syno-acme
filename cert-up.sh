@@ -29,10 +29,10 @@ installAcme () {
   mkdir -p ${TEMP_PATH}
   cd ${TEMP_PATH}
   echo 'begin downloading acme.sh tool...'
-  VERSION=wget -qO- -t1 -T2 "https://api.github.com/repos/acmesh-official/acme.sh/releases/latest" | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g'
+  version=wget -qO- -t1 -T2 "https://api.github.com/repos/acmesh-official/acme.sh/releases/latest" | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g'
+  ACME_SH_ADDRESS=https://ghproxy.com/https://github.com/acmesh-official/acme.sh/archive/${version}.tar.gz
   SRC_TAR_NAME=acme.sh.tar.gz
-  ZEROSSL_EMAI=wanghan0501@foxmail.com
-  curl -L -o ${SRC_TAR_NAME} https://ghproxy.com/https://github.com/acmesh-official/acme.sh/archive/${VERSION}.tar.gz acme.sh --register-account -m ${ZEROSSL_EMAI} --server zerossl
+  curl -L -o ${SRC_TAR_NAME} ${ACME_SH_ADDRESS}
   SRC_NAME=`tar -tzf ${SRC_TAR_NAME} | head -1 | cut -f1 -d"/"`
   tar zxvf ${SRC_TAR_NAME}
   echo 'begin installing acme.sh tool...'
@@ -49,7 +49,7 @@ generateCrt () {
   source config
   echo 'begin updating default cert by acme.sh tool'
   source ${ACME_BIN_PATH}/acme.sh.env
-  ${ACME_BIN_PATH}/acme.sh --force --log --issue --dns ${DNS} --dnssleep ${DNS_SLEEP} -d "${DOMAIN}" -d "*.${DOMAIN}"
+  ${ACME_BIN_PATH}/acme.sh --force --log --issue --server letsencrypt --dns ${DNS} --dnssleep ${DNS_SLEEP} -d "${DOMAIN}" -d "*.${DOMAIN}"
   ${ACME_BIN_PATH}/acme.sh --force --installcert -d ${DOMAIN} -d *.${DOMAIN} \
     --certpath ${CRT_PATH}/cert.pem \
     --key-file ${CRT_PATH}/privkey.pem \
