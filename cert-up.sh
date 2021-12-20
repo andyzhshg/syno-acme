@@ -24,12 +24,23 @@ backupCrt () {
   return 0
 }
 
+backupCurrCrt () {
+  echo 'begin backupCurrCrt'
+  BACKUP_PATH=${BASE_ROOT}/backup/current
+  mkdir -p ${BACKUP_PATH}
+  cp -rf ${CRT_BASE_PATH} ${BACKUP_PATH}
+  cp -rf ${PKG_CRT_BASE_PATH} ${BACKUP_PATH}/package_cert
+  echo 'done backupCurrCrt'
+  return 0
+}
+
 installAcme () {
   echo 'begin installAcme'
   mkdir -p ${TEMP_PATH}
   cd ${TEMP_PATH}
   echo 'begin downloading acme.sh tool...'
-  ACME_SH_ADDRESS=`curl -L https://cdn.jsdelivr.net/gh/andyzhshg/syno-acme@master/acme.sh.address`
+  ACME_SH_VERSION=$(wget -qO- -t1 -T2 "https://api.github.com/repos/acmesh-official/acme.sh/releases/latest" | grep "tag_name" | head -n 1 | awk -F ":" '{print $2}' | sed 's/\"//g;s/,//g;s/ //g')
+  ACME_SH_ADDRESS=https://ghproxy.com/https://github.com/acmesh-official/acme.sh/archive/${ACME_SH_VERSION}.tar.gz
   SRC_TAR_NAME=acme.sh.tar.gz
   curl -L -o ${SRC_TAR_NAME} ${ACME_SH_ADDRESS}
   SRC_NAME=`tar -tzf ${SRC_TAR_NAME} | head -1 | cut -f1 -d"/"`
@@ -48,7 +59,7 @@ generateCrt () {
   source config
   echo 'begin updating default cert by acme.sh tool'
   source ${ACME_BIN_PATH}/acme.sh.env
-  ${ACME_BIN_PATH}/acme.sh --force --log --issue --dns ${DNS} --dnssleep ${DNS_SLEEP} -d "${DOMAIN}" -d "*.${DOMAIN}"
+  ${ACME_BIN_PATH}/acme.sh --force --log --issue --server letsencrypt --dns ${DNS} --dnssleep ${DNS_SLEEP} -d "${DOMAIN}" -d "*.${DOMAIN}"
   ${ACME_BIN_PATH}/acme.sh --force --installcert -d ${DOMAIN} -d *.${DOMAIN} \
     --certpath ${CRT_PATH}/cert.pem \
     --key-file ${CRT_PATH}/privkey.pem \
@@ -101,6 +112,19 @@ revertCrt () {
   echo 'done revertCrt'
 }
 
+revertCurrCrt () {
+  echo 'begin revertCurrCrt'
+  BACKUP_PATH=${BASE_ROOT}/backup/current
+  if [ ! -d "${BACKUP_PATH}" ]; then
+    echo "[ERR] backup path: ${BACKUP_PATH} not found."
+    return 1
+  fi
+  cp -rf ${BACKUP_PATH}/certificate/system/default/[cert,fullchain,privkey]*.pem ${CRT_PATH}
+  updateService
+  reloadWebService
+  echo 'done revertCurrCrt'
+}
+
 updateCrt () {
   echo '------ begin updateCrt ------'
   backupCrt
@@ -108,6 +132,7 @@ updateCrt () {
   generateCrt
   updateService
   reloadWebService
+  backupCurrCrt
   echo '------ end updateCrt ------'
 }
 
@@ -122,7 +147,22 @@ case "$1" in
       revertCrt $2
       ;;
 
+  backup)
+    echo "begin backup"
+      backupCrt
+      ;;
+
+  backupcurr)
+    echo "begin backupcurr"
+      backupCurrCrt
+      ;;
+
+  revertcurr)
+    echo "begin revertcurr"
+      revertCurrCrt
+      ;;
+
     *)
-        echo "Usage: $0 {update|revert}"
+        echo "Usage: $0 {update|revert|backup|backupcurr|revertcurr}"
         exit 1
 esac
