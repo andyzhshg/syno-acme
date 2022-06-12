@@ -1,14 +1,14 @@
 # 你主域名，如 baidu.com sina.com.cn 等
 export DOMAIN=your_domain
 
-# DNS类型，根据域名服务商而定"dns_ali,dns_dp,dns_gd,dns_aws,dns_CF" 参考：https://github.com/acmesh-official/acme.sh/wiki/dnsapi
+# DNS类型，根据域名服务商而定"dns_ali,dns_dp,dns_gd,dns_aws,dns_cf" 参考：https://github.com/acmesh-official/acme.sh/wiki/dnsapi
 export DNS=dns_xxx
 
 # DNS API 生效等待时间 值(单位：秒)
 # 某些域名服务商的API生效时间较大，需要将这个值加大(比如900)
 export DNS_SLEEP=600
 
-# Cloudflare DNS=dns_CF
+# Cloudflare DNS=dns_cf
 export CF_Key="cloudflare 中查看你的 key" 
 export CF_Email="你的 cloudflare 邮箱"
 
