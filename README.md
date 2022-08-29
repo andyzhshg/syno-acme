@@ -1,4 +1,4 @@
 # syno-acme
-通过 acme 协议更新群晖 HTTPS 泛域名证书的自动脚本，支持配置多个证书
+通过acme协议更新群晖HTTPS泛域名证书的自动脚本
 
-使用方法参见: [https://hadb.me/synology-letsencrypt-multiple-domain-cert-configuration/](https://hadb.me/synology-letsencrypt-multiple-domain-cert-configuration/)
+使用方法参见: [http://www.up4dev.com/2018/05/29/synology-ssl-wildcard-cert-update/](http://www.up4dev.com/2018/05/29/synology-ssl-wildcard-cert-update/)
