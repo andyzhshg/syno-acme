@@ -29,7 +29,7 @@ installAcme () {
   mkdir -p ${TEMP_PATH}
   cd ${TEMP_PATH}
   echo 'begin downloading acme.sh tool...'
-  ACME_SH_ADDRESS=`curl -L https://cdn.jsdelivr.net/gh/andyzhshg/syno-acme@master/acme.sh.address`
+  ACME_SH_ADDRESS=`cat ${BASE_ROOT}/acme.sh.address`
   SRC_TAR_NAME=acme.sh.tar.gz
   curl -L -o ${SRC_TAR_NAME} ${ACME_SH_ADDRESS}
   SRC_NAME=`tar -tzf ${SRC_TAR_NAME} | head -1 | cut -f1 -d"/"`
@@ -48,6 +48,7 @@ generateCrt () {
   source config
   echo 'begin updating default cert by acme.sh tool'
   source ${ACME_BIN_PATH}/acme.sh.env
+  ${ACME_BIN_PATH}/acme.sh --register-account -m ${ZeroSSL_Email} --server zerossl
   ${ACME_BIN_PATH}/acme.sh --force --log --issue --dns ${DNS} --dnssleep ${DNS_SLEEP} -d "${DOMAIN}" -d "*.${DOMAIN}"
   ${ACME_BIN_PATH}/acme.sh --force --installcert -d ${DOMAIN} -d *.${DOMAIN} \
     --certpath ${CRT_PATH}/cert.pem \
@@ -76,6 +77,7 @@ reloadWebService () {
   echo 'begin reloadWebService'
   echo 'reloading new cert...'
   /usr/syno/etc/rc.sysv/nginx.sh reload
+  synoservice --reload nginx
   echo 'relading Apache 2.2'
   stop pkg-apache22
   start pkg-apache22

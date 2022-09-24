@@ -8,6 +8,9 @@ export DNS=dns_xxx
 # 某些域名服务商的API生效时间较大，需要将这个值加大(比如900)
 export DNS_SLEEP=120
 
+# 填写用于注册 ZeroSSL 账号的邮箱
+export ZeroSSL_Email=12345678@qq.com
+
 # 阿里云 DNS=dns_ali
 export Ali_Key="LTqIA87hOKdjevsf5"
 export Ali_Secret="0p5EYueFNq501xnCPzKNbx6K51qPH2"
