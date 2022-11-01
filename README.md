@@ -1,5 +1,5 @@
 # syno-acme
-通过acme协议更新群晖HTTPS泛域名证书的自动脚本(DSM 6.x)
+通过acme协议更新群晖HTTPS泛域名证书的自动脚本(DSM 6.x)，DSM7 请切换dsm7分支
 
 ## 更新日志
 1、证书服务器调整为 ZeroSSL，不受API接口申请次数限制，请配置 config 文件；
