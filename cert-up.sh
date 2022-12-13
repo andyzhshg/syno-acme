@@ -48,7 +48,17 @@ generateCrt () {
   source config
   echo 'begin updating default cert by acme.sh tool'
   source ${ACME_BIN_PATH}/acme.sh.env
-  ${ACME_BIN_PATH}/acme.sh --register-account -m ${ZeroSSL_Email} --server zerossl
+  if [[ ${SERVER_NAME} = "zerossl" ]]; then
+    ${ACME_BIN_PATH}/acme.sh --register-account -m ${ZeroSSL_Email} --server zerossl
+    ${ACME_BIN_PATH}/acme.sh --set-default-ca --server zerossl
+  elif [[ ${SERVER_NAME} = "letsencrypt" ]]; then
+    ${ACME_BIN_PATH}/acme.sh --set-default-ca --server letsencrypt
+  else
+    echo "[ERR] Please set SERVER_NAME in the config file !"
+    echo "begin revert"
+    revertCrt
+    exit 1;
+  fi
   ${ACME_BIN_PATH}/acme.sh --force --log --issue --dns ${DNS} --dnssleep ${DNS_SLEEP} -d "${DOMAIN}" -d "*.${DOMAIN}"
   ${ACME_BIN_PATH}/acme.sh --force --installcert -d ${DOMAIN} -d *.${DOMAIN} \
     --certpath ${CRT_PATH}/cert.pem \

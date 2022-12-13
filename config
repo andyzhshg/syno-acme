@@ -8,6 +8,9 @@ export DNS=dns_xxx
 # 某些域名服务商的API生效时间较大，需要将这个值加大(比如900)
 export DNS_SLEEP=600
 
+# 设置证书签发服务器 zerossl 或 letsencrypt 
+export SERVER_NAME="zerossl"
+
 # 填写用于注册 ZeroSSL 账号的邮箱
 export ZeroSSL_Email=email@example.com
 
