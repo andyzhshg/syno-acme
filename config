@@ -32,3 +32,8 @@ export AWS_SECRET_ACCESS_KEY="xxxxxxx"
 
 # Linode DNS=dns_linode
 export LINODE_API_KEY="xxxxxxxx"
+
+# 若需要开启bark通知，请取消#注释符，并替换 BARK_API_URL
+#export BARK_API_URL="https://api.day.app/XXXXXXXXXXXXXXXXXXXXXX"
+#export BARK_SOUND="newmail"
+#export BARK_GROUP=ACME
