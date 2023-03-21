@@ -7,7 +7,15 @@
 2022/6/22 更新群晖7.0以上支持，同时更新acme版本采用自动更新，acme经常更新，以后会自动更新最新版 感谢@iihong 
 
 
-使用方法参见: [http://www.up4dev.com/2018/05/29/synology-ssl-wildcard-cert-update/](http://www.up4dev.com/2018/05/29/synology-ssl-wildcard-cert-update/)
+使用方法参见: 
+
+[https://www.moteta.eu.org/p/%E7%BE%A4%E6%99%96dsm7.0%E5%85%8D%E8%B4%B9%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0%E8%AF%81%E4%B9%A6-%E5%91%BD%E4%BB%A4%E7%89%88/](https://www.moteta.eu.org/p/%E7%BE%A4%E6%99%96dsm7.0%E5%85%8D%E8%B4%B9%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0%E8%AF%81%E4%B9%A6-%E5%91%BD%E4%BB%A4%E7%89%88/)
+
+
+
+前人参考
+
+[http://www.up4dev.com/2018/05/29/synology-ssl-wildcard-cert-update/](http://www.up4dev.com/2018/05/29/synology-ssl-wildcard-cert-update/)
 
 ---
 通过设置 CERT_SERVER 为 zerossl 或 letsencrypt 来决定证书服务商
