@@ -9,7 +9,11 @@
 
 使用方法参见: 
 
+群晖命令版教程：
 [https://www.moteta.eu.org/p/%E7%BE%A4%E6%99%96dsm7.0%E5%85%8D%E8%B4%B9%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0%E8%AF%81%E4%B9%A6-%E5%91%BD%E4%BB%A4%E7%89%88/](https://www.moteta.eu.org/p/%E7%BE%A4%E6%99%96dsm7.0%E5%85%8D%E8%B4%B9%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0%E8%AF%81%E4%B9%A6-%E5%91%BD%E4%BB%A4%E7%89%88/)
+
+群晖Docker界面版教程：
+[https://www.moteta.eu.org/p/%E7%BE%A4%E6%99%96dsm7.0%E5%85%8D%E8%B4%B9%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0%E8%AF%81%E4%B9%A6-docker%E7%89%88/](https://www.moteta.eu.org/p/%E7%BE%A4%E6%99%96dsm7.0%E5%85%8D%E8%B4%B9%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0%E8%AF%81%E4%B9%A6-docker%E7%89%88/)
 
 
 
