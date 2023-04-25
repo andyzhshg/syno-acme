@@ -1,6 +1,6 @@
 # syno-acme
 
-> Deprecated：已弃用，可直接使用 [acme.sh](https://github.com/acmesh-official/acme.sh)，已支持直接部署至群晖，详见[deploy/synology_dsm.sh](https://github.com/acmesh-official/acme.sh/blob/master/deploy/synology_dsm.sh)
+> Deprecated：已弃用，可直接使用 [acme.sh](https://github.com/acmesh-official/acme.sh)，已支持直接部署至群晖，详见 [Synology-NAS-Guide](https://github.com/acmesh-official/acme.sh/wiki/Synology-NAS-Guide)
 
 通过acme协议更新群晖HTTPS泛域名证书的自动脚本
 
